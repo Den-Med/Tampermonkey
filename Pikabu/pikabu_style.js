@@ -11,7 +11,7 @@
 // ==/UserScript==
 
 (function() {
-    'use strict';
+    '***';
     const userStyleEl = document.createElement('style');
     document.head.appendChild(userStyleEl);
 
