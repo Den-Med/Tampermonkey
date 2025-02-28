@@ -26,7 +26,7 @@
     function handleWheelPR(event) {
       event.preventDefault(); // Предотвращаем скролл страницы
       const playbackRateDelta = 0.1 * Math.sign(event.deltaY) * -1;
-      const video = event.target.closest('video');
+      const video = event.target.closest('.player__player').querySelector('video');
       video.playbackRate += playbackRateDelta;
       video.playbackRate = Math.min(Math.max(video.playbackRate, 0.1), 3); // Ограничиваем диапазон скорости (0.1 - 3)
     };
