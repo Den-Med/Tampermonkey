@@ -11,7 +11,7 @@
 
 (function() {
     // check CSS rule in "Pikabu style"
-    const textType = Node.TEXT_NODE
+    const textType = Node.TEXT_NODE;
     const linkList_tme = document.querySelectorAll('p > a[href^="https://t.me/"]');
 
     linkList_tme.forEach((elemLink)=> {
