@@ -19,10 +19,10 @@
         if (elemLink.previousSibling?.nodeType == textType) linkRange.push(elemLink.previousSibling);
         linkRange.push(elemLink);
         if (elemLink.nextSibling?.nodeType == textType) linkRange.push(elemLink.nextSibling);
-        const divLink = document.createElement('div');
-        divLink.className = 'hiddenLink';
-        elemLink.after(divLink);
-        divLink.append(...linkRange);
+        const span = document.createElement('span');
+        span.className = 'hiddenLink';
+        elemLink.after(span);
+        span.append(...linkRange);
     });
 
 })();
