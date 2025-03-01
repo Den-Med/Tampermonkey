@@ -11,7 +11,7 @@
 // ==/UserScript==
 
 (function() {
-    '***';
+    'use strict';
     const userStyleEl = document.createElement('style');
     document.head.appendChild(userStyleEl);
 
@@ -31,12 +31,14 @@
     GM_addStyle( 'button.carousel__scroll_left {left: 0px;}' );
     GM_addStyle( 'p.story-block__title {color: var(--color-black-940);}' );
     GM_addStyle( 'a[href*="dQw4w9WgXcQ"] {color: #8e9900;}' );
-    GM_addStyle( `
-                  p:has(a[href^="https://t.me/"]):hover   {visibility: visible;}
-                  p:has(a[href^="https://t.me/"])::before {content: "➖"; visibility: visible; }
-                  p:has(a[href^="https://t.me/"])         {visibility: hidden;}
-               ` );
     GM_addStyle( '.pkb-highlight-block {padding: 5px;}' );
+
+    GM_addStyle( `
+                  .hiddenLink:hover   {visibility: visible;}
+                  .hiddenLink::before {visibility: visible; content: "➖";}
+                  .hiddenLink         {visibility: hidden;}
+               ` );
+
 
     //GM_addStyle( '.story-skeleton { display: none; }' ); // крашит страницу поиска
 
