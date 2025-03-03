@@ -12,18 +12,22 @@
 (function() {
     // check CSS rule in "Pikabu style"
     const textType = Node.TEXT_NODE;
+    const commType = Node.COMMENT_NODE
     const linkList_tme = document.querySelectorAll('p > a[href^="https://t.me/"]');
 
     linkList_tme.forEach((elemLink)=> {
+        let pCNRange = [...elemLink.parentNode.childNodes];
+        let eIndex = pCNRange.indexOf(elemLink);
         let linkRange = [];
-        if (elemLink.previousSibling?.nodeType == textType) linkRange.push(elemLink.previousSibling);
+        let prevSib = pCNRange[eIndex -1]?.nodeType == commType ? pCNRange[eIndex -2] : pCNRange[eIndex -1];
+        let nextSib = pCNRange[eIndex +1]?.nodeType == commType ? pCNRange[eIndex +2] : pCNRange[eIndex +1];
+        if (prevSib?.nodeType == textType) linkRange.push(prevSib);
         linkRange.push(elemLink);
-        if (elemLink.nextSibling?.nodeType == textType) linkRange.push(elemLink.nextSibling);
+        if (prevSib?.nodeType == textType) linkRange.push(prevSib);
         const span = document.createElement('span');
         span.className = 'hiddenLink';
         elemLink.after(span);
         span.append(...linkRange);
     });
-    
 
 })();
