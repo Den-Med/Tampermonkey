@@ -11,19 +11,22 @@
 
 (function() {
     // check CSS rule in "Pikabu style"
-    const textType = Node.TEXT_NODE;
-    const commType = Node.COMMENT_NODE
-    const linkList_tme = document.querySelectorAll('p > a[href^="https://t.me/"]');
+    const elemType = Node.ELEMENT_NODE
+    const telegramLinks = document.querySelectorAll('p > a[href^="https://t.me/"]');
 
-    linkList_tme.forEach((elemLink)=> {
-        let pCNRange = [...elemLink.parentNode.childNodes];
-        let eIndex = pCNRange.indexOf(elemLink);
-        let linkRange = [];
-        let prevSib = pCNRange[eIndex -1]?.nodeType == commType ? pCNRange[eIndex -2] : pCNRange[eIndex -1];
-        let nextSib = pCNRange[eIndex +1]?.nodeType == commType ? pCNRange[eIndex +2] : pCNRange[eIndex +1];
-        if (prevSib?.nodeType == textType) linkRange.push(prevSib);
-        linkRange.push(elemLink);
-        if (prevSib?.nodeType == textType) linkRange.push(prevSib);
+    telegramLinks.forEach((elemLink)=> {
+        let childArray = Array.from(elemLink.parentNode.childNodes);
+
+        let eIndex = childArray.indexOf(elemLink);
+
+        let leftIndex = childArray.slice(0,eIndex).findLastIndex((e)=> e.nodeType == elemType );
+        leftIndex = leftIndex >= 0 ? leftIndex + 1 : 0;
+
+        let rightIndex = childArray.slice(eIndex + 1, childArray.length + 1).findLastIndex((e)=> e.nodeType == elemType );
+        rightIndex = rightIndex >= 0 ? rightIndex - 1 : childArray.length
+
+        let linkRange = childArray.slice(leftIndex, rightIndex + 1);
+
         const span = document.createElement('span');
         span.className = 'hiddenLink';
         elemLink.after(span);
