@@ -23,7 +23,7 @@
         leftIndex = leftIndex >= 0 ? leftIndex + 1 : 0;
 
         let rightIndex = childArray.slice(eIndex + 1).findIndex((e)=> e.nodeType == elemType );
-        rightIndex = rightIndex >= 0 ? rightIndex + eIndex : linkRange.length
+        rightIndex = rightIndex >= 0 ? rightIndex + eIndex : childArray.length
 
         let linkRange = childArray.slice(leftIndex, rightIndex + 1);
         if (linkRange.length == 0) return;
