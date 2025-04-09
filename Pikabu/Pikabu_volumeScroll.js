@@ -37,7 +37,7 @@
 
     function changeVloumeNative(player, volumeDelta){
         const video = player.querySelector('video');
-        video.volume = Math.min(Math.max(video.volume + volumeDelta, 0), 1); // Ограничиваем диапазон скорости (0 - 1)
+        video.volume = Math.min(Math.max(video.volume + volumeDelta, 0), 1); // Ограничиваем диапазон громкости (0 - 1)
 
         const lsV = window.localStorage.getItem(lsVName);
         if (lsV) {
