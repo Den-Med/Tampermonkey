@@ -52,26 +52,22 @@
         }
     }
 
+     function catchHandlerNodes(node) {
+        if (node.nodeType !== 1) return;
+        let nodeArray = [];
+        if (node.matches(volumeQ)) nodeArray.push(node) ;
+        const nestedElements = node.querySelectorAll(volumeQ);
+        nodeArray.push(...Array.from(nestedElements));
+        nodeArray.forEach(e => e.addEventListener('wheel', handleVolumeS));
+    }
+
 
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((node) => {
-          if (node.nodeType === Node.ELEMENT_NODE) {
-            if (node.matches(volumeQ)) {
-                node.addEventListener('wheel', handleVolumeS);;
-            }
-
-            const nestedElements = node.querySelectorAll(volumeQ);
-            nestedElements.forEach((element) => {
-                element.addEventListener('wheel', handleVolumeS);;
-            });
-          }
-        });
+        mutation.addedNodes.forEach(catchHandlerNodes);
       });
     });
 
-    document.querySelectorAll('.player').forEach((e)=>{
-        observer.observe(e, obsAtt);
-    });
+    observer.observe(document.body, obsAtt);
 
 })();
