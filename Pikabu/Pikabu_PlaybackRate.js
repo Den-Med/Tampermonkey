@@ -13,7 +13,8 @@
     const obsAtt = {childList: true, subtree: true};
     const w3svg = 'http://www.w3.org/2000/svg';
     const stylePR = document.createElement('style');
-    const palyerConSel = 'div.player__controls-wrapper'
+    const palyerConSel = 'div.player__controls-wrapper';
+    const circleAtt = {fill: '#0000', cx: 10, cy:10, r: 7, 'stroke-width': 3, stroke: '#fff'};
 
     stylePR.textContent = `.player__playbackRate {cursor: pointer; padding: 16px 5px 16px 1px;}
     .playbackValue {display: none; position: absolute; bottom: 50%; padding: 4px;}
@@ -34,7 +35,7 @@
         svgElem.style.cssText = 'width: 25px; height: 20px';
 
         const ellipseElem = document.createElementNS(w3svg, 'circle');
-        [['fill', '#0000'],['cx', 10],['cy', 10],['r', 7],['stroke-width', 3],['stroke', '#fff']].forEach(attr => ellipseElem.setAttribute(...attr));
+        Object.entries(circleAtt).forEach(attr => ellipseElem.setAttribute(...attr));
 
         svgElem.appendChild(ellipseElem);
         divPlaybackRate.appendChild(svgElem);
@@ -75,9 +76,5 @@
     });
 
     observer.observe(document.body, obsAtt);
-//     document.querySelectorAll('.player').forEach((e)=>{
-//         observer.observe(e, obsAtt);
-//     });
-
 
 })();
