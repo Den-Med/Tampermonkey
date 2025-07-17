@@ -2,7 +2,7 @@
 // @name         Download Merge Image
 // @namespace    http://tampermonkey.net/
 // @version      2025-07-17
-// @description  crop and merge omic book
+// @description  crop and merge comic book
 // @author       Fidgy
 // @match        https://www.webtoons.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=webtoons.com
