@@ -32,8 +32,6 @@
     createButton();
 
     function createButton(){
-        const vBox = document.querySelector('_viewerBox');
-        //if (!vBox) return;
         const buttonElem = document.createElement('div');
         buttonElem.style.cssText = cssButton;
         buttonElem.textContent = '💾';
@@ -56,13 +54,10 @@
             const loadedImages = await loadImages(imageUrls);
             const canvas = document.createElement('canvas');
 
-            //const croppedImages = loadedImages.map(img => cropImage(img));
             let croppedImages = loadedImages.map(img => getCropImageList(img));
             croppedImages = croppedImages.flat();
 
             // Рассчет размеров
-            //const maxWidth = Math.max(...loadedImages.map(img => img.width));
-            //const totalHeight = loadedImages.reduce((sum, img) => sum + img.height, 0);
             const maxWidth = Math.max(...croppedImages.map(img => img.width));
             const totalHeight = croppedImages.reduce((sum, img) => sum + img.height, 0);
 
@@ -71,8 +66,6 @@
 
             const ctx = canvas.getContext('2d');
             let yPos = 0;
-
-
 
             // Отрисовка
             croppedImages.forEach(img => {
@@ -87,7 +80,7 @@
 
         } catch (error) {
             console.error("Ошибка загрузки изображений:", error);
-            alert("Не удалось загрузить изображения. Проверьте CORS-настройки сервера.");
+            alert("Не удалось загрузить изображения.");
         }
     }
 
@@ -155,20 +148,6 @@
     }
 
 // Функция для обрезки белых полос
-    function cropImage(img) {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
-
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-
-        let crop = findCrop(canvas, data);
-
-        return getCroppedCanvas(img, crop);
-    }
 
     function getCropImageList(img) {
         const canvas = document.createElement('canvas');
@@ -189,8 +168,7 @@
     }
 
     function getCroppedCanvas(img, crop){
-        //const cropHeight = img.height - crop.top - crop.bottom;
-        const cropHeight = crop.bottom - crop.top; // +1 ;
+        const cropHeight = crop.bottom - crop.top;
         if (crop.top === 0 && crop.bottom === 0) return img;
 
         const croppedCanvas = document.createElement('canvas');
@@ -209,47 +187,16 @@
         return croppedCanvas;
     }
 
-    function findCrop(canvas, data){
-        const minHeight = globalMinImgRowsForCheck;
-        let crop = {top: 0, bottom: 0}
+    // получаем начало и конец изображения исключая белые участки
+    function getCropList(canvas, imageData){
+        const minRows = globalMinImgRowsForCheck; //минимальная высота белых участков для исключения
+        const cropList = [{start: null, end: 0}]; 
         for (let y = 0; y < canvas.height; y++) {
-            if (!isWhiteRow(data, canvas.width, y)) break;
-            crop.top = y + 1;
-        }
-
-        // Определяем обрезку снизу
-        for (let y = canvas.height - 1; y >= 0; y--) {
-            if (!isWhiteRow(data, canvas.width, y)) break;
-            crop.bottom = canvas.height - y;
-        }
-        crop.top = crop.top >= minHeight ? crop.top : 0;
-        crop.bottom = crop.bottom >= minHeight ? crop.bottom : 0;
-        return crop;
-    }
-
-//     function getCropList(canvas, data){
-//         const minRows = globalMinImgRowsForCheck;
-//         let cropList = new ImgCropList(minRows);
-//         for (let y = 0; y < canvas.height; y++) {
-//             if (isWhiteRow(data, canvas.width, y)) {
-//                 cropList.closeCurrentOn(y);
-//             } else {
-//                 cropList.setValue(y);
-//             }
-//         }
-//         cropList.closeCurrent();
-//         return cropList.$;
-//     }
-
-    function getCropList(canvas, data){
-        const minRows = globalMinImgRowsForCheck;
-        const cropList = [{start: null, end: 0}];
-        for (let y = 0; y < canvas.height; y++) {
-            let e = cropList.at(-1)
-            if (isWhiteRow(data, canvas.width, y)) {
+            let e = cropList.at(-1);
+            if (isWhiteRow(imageData, canvas.width, y)) {
                 let diff = y - e.end;
                 if (e.start !== null && diff >= minRows) {
-                    cropList.push({start: null, end: 0})
+                    cropList.push({start: null, end: 0});
                 }
             } else {
                 if (e.start === null) {
@@ -261,48 +208,6 @@
             }
         }
         return cropList.filter(e=> e.start !== null);
-    }
-
-    class ImgCropList {
-        constructor(threshold) {
-            this.entries = [this.#createNullObj()];
-            this.minSet = threshold;
-        }
-        #createNullObj() {
-            return { start: null, end: 0, isClosed: false };
-        }
-        get currentEntry() {
-            return this.entries.at(-1);
-        }
-        closeCurrentOn(value) {
-            const e = this.currentEntry;
-            //let diff = e.end - e.start;
-            let diff = value - e.end;
-            if (e.start !== null && diff >= this.minSet) {
-                e.isClosed = true;
-            }
-        }
-        closeCurrent(){
-            this.currentEntry.isClosed = true
-        }
-        setValue(value) {
-            const e = this.currentEntry;
-            if (e.isClosed) {
-                const entry = this.#createNullObj();
-                entry.start = value;
-                this.entries.push(entry);
-                return;
-            }
-            if (e.start === null) {
-                e.start = value;
-                e.end = value + 1;
-            } else {
-                e.end = value;
-            }
-        }
-        get $(){
-            return this.entries.filter(e=> e.start !== null && e.isClosed === true);
-        }
     }
 
 })();
